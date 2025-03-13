@@ -1,0 +1,330 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+// Function prototypes
+void insertAtFirst(int);
+void deleteAtFirst();
+void insertAtLast(int);
+void deleteAtLast();
+void insertAtRandom(int, int);
+void deleteAtRandom(int);
+void search(int);
+void update(int, int);
+void display();
+
+// Head pointer
+struct Node* head = NULL;
+
+// Function to insert a node at the beginning
+void insertAtFirst(int value) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = value;
+    newNode->next = head;
+    head = newNode;
+}
+
+// Function to delete the first node
+void deleteAtFirst() {
+    if (head == NULL) {
+        printf("List is empty!\n");
+        return;
+    }
+    struct Node* temp = head;
+    head = head->next;
+    free(temp);
+}
+
+// Function to insert a node at the end
+void insertAtLast(int value) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = value;
+    newNode->next = NULL;
+
+    if (head == NULL) {
+        head = newNode;
+        return;
+    }
+
+    struct Node* temp = head;
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+    temp->next = newNode;
+}
+
+// Function to delete the last node
+void deleteAtLast() {
+    if (head == NULL) {
+        printf("List is empty!\n");
+        return;
+    }
+    if (head->next == NULL) {
+        free(head);
+        head = NULL;
+        return;
+    }
+
+    struct Node* temp = head;
+    struct Node* prev = NULL;
+
+    while (temp->next != NULL) {
+        prev = temp;
+        temp = temp->next;
+    }
+
+    prev->next = NULL;
+    free(temp);
+}
+
+// Function to insert a node at a specific position
+void insertAtRandom(int value, int position) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = value;
+
+    if (position == 1) {
+        newNode->next = head;
+        head = newNode;
+        return;
+    }
+
+    struct Node* temp = head;
+    for (int i = 1; temp != NULL && i < position - 1; i++) {
+        temp = temp->next;
+    }
+
+    if (temp == NULL) {
+        printf("Invalid position!\n");
+        return;
+    }
+
+    newNode->next = temp->next;
+    temp->next = newNode;
+}
+
+// Function to delete a node at a specific position
+void deleteAtRandom(int position) {
+    if (head == NULL) {
+        printf("List is empty!\n");
+        return;
+    }
+
+    struct Node* temp = head;
+
+    if (position == 1) {
+        head = head->next;
+        free(temp);
+        return;
+    }
+
+    struct Node* prev = NULL;
+    for (int i = 1; temp != NULL && i < position; i++) {
+        prev = temp;
+        temp = temp->next;
+    }
+
+    if (temp == NULL) {
+        printf("Invalid position!\n");
+        return;
+    }
+
+    prev->next = temp->next;
+    free(temp);
+}
+
+// Function to search for a value in the linked list
+void search(int value) {
+    struct Node* temp = head;
+    int position = 1;
+
+    while (temp != NULL) {
+        if (temp->data == value) {
+            printf("Element %d found at position %d\n", value, position);
+            return;
+        }
+        temp = temp->next;
+        position++;
+    }
+    printf("Element %d not found!\n", value);
+}
+
+// Function to update a value in the linked list
+void update(int oldVal, int newVal) {
+    struct Node* temp = head;
+
+    while (temp != NULL) {
+        if (temp->data == oldVal) {
+            temp->data = newVal;
+            printf("Element %d updated to %d\n", oldVal, newVal);
+            return;
+        }
+        temp = temp->next;
+    }
+    printf("Element %d not found!\n", oldVal);
+}
+
+// Function to display the linked list
+void display() {
+    struct Node* temp = head;
+
+    if (temp == NULL) {
+        printf("List is empty!\n");
+        return;
+    }
+
+    printf("Linked List: ");
+    while (temp != NULL) {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+// Main function
+int main() {
+    int choice, value, position, oldVal, newVal;
+
+    while (1) {
+        printf("\n--- Linked List Menu ---\n");
+        printf("1. Insert at First\n2. Delete at First\n3. Insert at Last\n4. Delete at Last\n");
+        printf("5. Insert at Random\n6. Delete at Random\n7. Search\n8. Update\n9. Display\n10. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter value to insert at first: ");
+                scanf("%d", &value);
+                insertAtFirst(value);
+                break;
+            case 2:
+                deleteAtFirst();
+                break;
+            case 3:
+                printf("Enter value to insert at last: ");
+                scanf("%d", &value);
+                insertAtLast(value);
+                break;
+            case 4:
+                deleteAtLast();
+                break;
+            case 5:
+                printf("Enter value and position to insert: ");
+                scanf("%d %d", &value, &position);
+                insertAtRandom(value, position);
+                break;
+            case 6:
+                printf("Enter position to delete: ");
+                scanf("%d", &position);
+                deleteAtRandom(position);
+                break;
+            case 7:
+                printf("Enter value to search: ");
+                scanf("%d", &value);
+                search(value);
+                break;
+            case 8:
+                printf("Enter value to update and new value: ");
+                scanf("%d %d", &oldVal, &newVal);
+                update(oldVal, newVal);
+                break;
+            case 9:
+                display();
+                break;
+            case 10:
+                exit(0);
+            default:
+                printf("Invalid choice!\n");
+        }
+    }
+
+    return 0;
+}
+
+
+Input :
+1   (Insert 10 at first)
+10
+1   (Insert 20 at first)
+20
+3   (Insert 30 at last)
+30
+3   (Insert 40 at last)
+40
+5   (Insert 25 at position 3)
+25 3
+9   (Display the linked list)
+
+7   (Search for 25)
+25
+7   (Search for 100)
+100
+
+6   (Delete node at position 3)
+3
+9   (Display after deletion)
+
+8   (Update 40 to 50)
+40 50
+9   (Display after update)
+
+2   (Delete first node)
+4   (Delete last node)
+9   (Display after deletions)
+
+10  (Exit)
+Output:
+--- Linked List Menu ---
+1. Insert at First
+2. Delete at First
+3. Insert at Last
+4. Delete at Last
+5. Insert at Random
+6. Delete at Random
+7. Search
+8. Update
+9. Display
+10. Exit
+Enter your choice: 
+
+Enter value to insert at first: 
+Linked List: 10 -> NULL
+
+Enter value to insert at first: 
+Linked List: 20 -> 10 -> NULL
+
+Enter value to insert at last: 
+Linked List: 20 -> 10 -> 30 -> NULL
+
+Enter value to insert at last: 
+Linked List: 20 -> 10 -> 30 -> 40 -> NULL
+
+Enter value and position to insert: 
+Linked List: 20 -> 10 -> 25 -> 30 -> 40 -> NULL
+
+Linked List: 20 -> 10 -> 25 -> 30 -> 40 -> NULL
+
+Enter value to search: 
+Element 25 found at position 3
+
+Enter value to search: 
+Element 100 not found!
+
+Enter position to delete: 
+Linked List: 20 -> 10 -> 30 -> 40 -> NULL
+
+Enter value to update and new value: 
+Element 40 updated to 50
+
+Linked List: 20 -> 10 -> 30 -> 50 -> NULL
+
+First node deleted.
+
+Last node deleted.
+
+Linked List: 10 -> 30 -> NULL
